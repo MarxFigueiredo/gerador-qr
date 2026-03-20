@@ -15,6 +15,7 @@ jobs:
           pip3 install buildozer cython==0.29.37
 
       - name: Build APK
+        working-directory: ${{ github.workspace }}
         run: |
           buildozer init
           sed -i 's/requirements = python3,kivy/requirements = python3,kivy==2.2.1,qrcode,pillow/' buildozer.spec
@@ -26,4 +27,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: bin/*.apk
+          path: ${{ github.workspace }}/bin/*.apk
