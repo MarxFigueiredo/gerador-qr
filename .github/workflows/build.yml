@@ -5,19 +5,27 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
       - uses: actions/checkout@v3
+
+      # ✅ FORÇAR PYTHON 3.9
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-pip build-essential libssl-dev libffi-dev git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev
-          pip3 install buildozer cython==0.29.37
+          sudo apt-get install -y build-essential libssl-dev libffi-dev git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.33
 
       - name: Build APK
         run: |
           buildozer init
-          sed -i 's/requirements = python3,kivy/requirements = python3,kivy==2.2.1,qrcode/' buildozer.spec
+          sed -i 's/requirements = python3,kivy/requirements = python3==3.9.0,kivy==2.2.1/' buildozer.spec
           sed -i 's/#android.api = 31/android.api = 31/' buildozer.spec
           sed -i 's/#android.minapi = 21/android.minapi = 21/' buildozer.spec
           yes | buildozer android debug
